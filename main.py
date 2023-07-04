@@ -1,4 +1,5 @@
 import os
+import errno
 import requests
 import typer
 
@@ -22,10 +23,27 @@ def main(name: str):
     print()
     print("Test for outbound Internet access:")
     print("-" * 60)
-    url = 'https://www.heppnetz.de/'
-    r = requests.get(url)
-    print("The first 200 characters from www.heppnetz.de are:")
-    print(r.text[:200])
+    try:
+        url = 'https://www.apple.com'
+        r = requests.get(url)
+        if r.status == 200:
+            print("HTTP 200 OK")
+        else:
+            print("HTTP Status: {r.status}")
+    except (IOError, ConnectionError) as err:
+        print(f"Network access is blocked. [{err}]")
+    print()
+    print("Test if user has root access:")
+    print("-" * 60)
+    try:
+        files = os.listdir('/root/')
+        print(f"{len(files)} files found in /root/:")
+        for f in files:
+            print(f"\t{f}")
+        print("Warning: Script seems to have root access.")
+    except PermissionError as err:
+        print(f"OK: Python script seems to have no root privileges. [{err}]")
+
     print("\nDone.")
 
 
