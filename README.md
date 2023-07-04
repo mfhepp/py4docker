@@ -5,15 +5,14 @@ Based on [`micromamba-docker`](https://github.com/mamba-org/micromamba-docker) a
 
 ## Features
 
-- Code inside the Docker container runs as a non-root user, [thanks to the `micromamba-docker` base](https://github.com/mamba-org/micromamba-docker/blob/main/FAQ.md#how-do-i-install-software-using-aptapt-getapk).
-- Network access can be blocked, which reduces the risk if a hidden transfer of data and commands by malicious code.
-- File-access is limited to the current working directory and can be disabled entirely.
-- Small footprint (<300 MB)
+- Code inside the Docker container runs as a **non-root user,** [thanks to the `micromamba-docker` base](https://github.com/mamba-org/micromamba-docker/blob/main/FAQ.md#how-do-i-install-software-using-aptapt-getapk) image.
+- **Network access can be blocked,** which reduces the risk of a hidden transfer of data and commands by malicious code (e.g. from compromised PyPi modules).
+- **File-access is limited to the current working directory** and can be disabled entirely.
+- **Small footprint** (<300 MB)
 
 ## Usage
 
 ## Configuration and Settings
-
 
 ### Access to the Local File System
 
@@ -40,30 +39,21 @@ from `run_script.sh`.
 
 ### Build
 
+You can build the image with
+
 `docker build --quiet --tag test_app .`
 
 ### Run
 
-The skeletton includes a small shell script that mounts the current working directory for read- and write access.
+The skeletton includes a small shell script `run_script.sh` that mounts the current working directory for read- and write access and blocks Internet access etc.
 
-This should be expanded to limit the access privileges even further, e.g.
+This should be expanded to limit the access privileges even further, e.g. to grant read-only access to current directory.
 
-- block outbound Internet access during the execution
-- grant read-only access to current directory
+`./run_script.sh <parameter_1>`
 
-#### Via the `run_script.sh`:
-
-`./run_script.sh <parameter_1>``
-
-#### Directly from Docker
-
-`docker run test_app`
-
-`docker run --rm test_app`
+`<parameter_1>` is just a dummy parameter that the dummy `main.py` expects. Adjust as needed.
 
 ## Todo
 
 - Improve Docker runtime options and parameters.
-- Block internet access at run-time.
-- Change user to non-root.
 - Block access to Docker daemon (if possible).
