@@ -50,13 +50,13 @@ You can build the image with
 
 ### Run
 
-The skeletton includes a small shell script `run_script.sh` that mounts the current working directory for read naccess and the output directory for read and write access, and blocks Internet access.
+The skeletton includes a small shell script `run_script.sh` that mounts the current working directory for read access and the output directory for read and write access, and blocks Internet access.
 
 This should be expanded to limit the access privileges even further, e.g. by blocking any access to the local file system.
 
 `./run_script.sh <parameter_1>`
 
-`<parameter_1>` is just a dummy parameter that the dummy `main.py` expects. Adjust as needed.
+`<parameter_1>` is just a dummy parameter that the example script `main.py` expects. Adjust as needed.
 
 ### Logging
 
@@ -76,3 +76,4 @@ If you just want to redirect it to the logfile, use
 
 - Improve Docker runtime options and parameters.
 - Block access to Docker daemon (if possible).
+- Expand support for blocking Internet access e.g. by domain or IP ranges.
