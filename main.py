@@ -1,50 +1,68 @@
 import os
+import logging
 import errno
 import requests
 import typer
+from typing_extensions import Annotated
+
+# In Python >=3.11, we could use 
+# https://docs.python.org/3/library/logging.html#logging.getLevelNamesMapping
+LOGGING_LEVELS = ["CRITICAL", "ERROR", "WARNING", "INFO",  "DEBUG"]
 
 
-def main(name: str):
-    print(f"Hello, {name}!")
-    print("-" * 60)
-    print()
-    print("Test for read-access to the current working directory,  which is mapped as ./data/")
-    print("-" * 60)
+def main(name: Annotated[str, typer.Argument(help="First name of person to greet.")] = "",
+        logging_level: Annotated[str, 
+        typer.Option(help=f"Logging level {LOGGING_LEVELS}")] = "INFO"):
+    if logging_level.upper() not in LOGGING_LEVELS:
+        print(f"Error: Unknown logging level {logging_level}.")
+        raise typer.Exit(code=1)
+    level = logging.getLevelName(logging_level.upper())
+    logging.basicConfig(
+        format="%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+        level=level)
+    logging.info("Script started.")
+    logging.info(f"Hello, {name}!")
+    logging.info("Test for read-access to the current working directory,  which is mapped as ./data/")
     files = os.listdir('data/')
-    print(f"{len(files)} files in the current working directory:")
+    logging.info("Read access ok.")
+    logging.info(f"Found {len(files)} files in the current working directory.")
     for f in files:
-        print(f"\t{f}")
-    print()
-    print("Test for write access to the current working directory:")
-    print("-" * 60)
-    with open ("data/test.txt", 'w') as text_file:
-        text_file.write("I can write to this directory.")
-        print("I can write to this directory.")
-    print()
-    print("Test for outbound Internet access:")
-    print("-" * 60)
+        logging.info(f"\t{f}")
+    logging.info("Test for write access to the current working directory.")
+    try:
+        with open ("data/test.txt", 'w') as text_file:
+            text_file.write("I can write to the read-only directory.")
+            logging.warning("Error: I can write to the read-only directory.")
+    except OSError as err:
+        logging.info(f"OK: Write access is blocked. [{err}]")
+    logging.info("Test for write access to the output directory.")
+    try:
+        with open ("output/test.txt", 'w') as text_file:
+            text_file.write("I can write to the output directory.")
+            logging.info("OK: I can write to the output directory.")
+    except OSError as err:
+        logging.error(f"Write access to output/ is blocked. [{err}]")
+    logging.info("Test for outbound Internet access:")
     try:
         url = 'https://www.apple.com'
         r = requests.get(url)
-        if r.status == 200:
-            print("HTTP 200 OK")
+        if r.status_code == 200:
+            logging.warning("HTTP 200 OK - outbound access permitted.")
         else:
-            print("HTTP Status: {r.status}")
+            logging.error("HTTP Status: {r.status}")
     except (IOError, ConnectionError) as err:
-        print(f"Network access is blocked. [{err}]")
-    print()
-    print("Test if user has root access:")
-    print("-" * 60)
+        logging.info(f"OK: Network access is blocked. [{err}]")
+    logging.info("Testing if user has root access.")
     try:
         files = os.listdir('/root/')
-        print(f"{len(files)} files found in /root/:")
+        logging.info(f"{len(files)} files found in /root/:")
         for f in files:
-            print(f"\t{f}")
-        print("Warning: Script seems to have root access.")
+            logging.info(f"\t{f}")
+        logging.warning("Script seems to have root access.")
     except PermissionError as err:
-        print(f"OK: Python script seems to have no root privileges. [{err}]")
-
-    print("\nDone.")
+        logging.info(f"OK: Python script seems to have no root privileges. [{err}]")
+    logging.info("Done.")
 
 
 if __name__ == "__main__":
