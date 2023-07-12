@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Shell script for starting Docker container
 # TBD:  - Check other useful Docker CLI options
 # 
@@ -9,4 +10,3 @@ docker run \
  --net none \
  --rm \
  test_app "$@"
-#  

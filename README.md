@@ -64,6 +64,15 @@ This should be expanded to limit the access privileges even further, e.g. by blo
 
 `<parameter_1>` is just a dummy parameter that the example script `main.py` expects. Adjust as needed.
 
+### Creating Alias
+
+If you want to be able to run the script just by a single command, like `my_script FooBar`, then add the following lines to your `.bash_profile` file:
+
+```
+export PATH=~/the/path/to_the_project/py4docker:$PATH
+alias my_script="bash run_script.sh"
+```
+
 ### Logging
 
 #### To Logfile and Console
@@ -78,8 +87,8 @@ If you just want to redirect it to the logfile, use
 
 `./run_script.sh <parameter_1> >> logfile.log 2>&1`
 
-## Todo
+## Ideas for Improvements
 
+- Fix user ID / file permissions for Linux systems.
 - Improve Docker runtime options and parameters.
-- Block access to Docker daemon (if possible).
 - Expand support for blocking Internet access e.g. by domain or IP ranges.
