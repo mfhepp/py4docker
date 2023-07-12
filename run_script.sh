@@ -4,8 +4,8 @@
 # Create output directory if not exists
 mkdir -p output
 docker run \
- --mount type=bind,source="$(pwd)",target=/usr/app/src/data \
- --mount type=bind,source="$(pwd)/output",target=/usr/app/src/output,readonly \
+ --mount type=bind,source="$(pwd)",target=/usr/app/src/data,readonly \
+ --mount type=bind,source="$(pwd)/output",target=/usr/app/src/output \
  --net none \
  --rm \
  test_app "$@"

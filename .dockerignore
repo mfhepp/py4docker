@@ -1,0 +1,12 @@
+.git
+.github
+docs
+test
+LICENSE
+Makefile
+README.md
+SECURITY.md
+build.sh
+default-stack.md
+versions.md
+output/
