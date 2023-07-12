@@ -28,6 +28,12 @@ A subdirectory `output` is created within the current working directory, if it d
 
 You can also mount additional local paths using the same syntax.
 
+### User ID Mismatch Problems
+
+On Linux machines, you may run into problems accessing the files in the `output/` folder, because the user ID inside the container differs from your user ID on the host system. For details, see e.g. <https://www.joyfulbikeshedding.com/blog/2021-03-15-docker-and-the-host-filesystem-owner-matching-problem.html>. 
+
+This should not be a problem on Apple OSX systems running ***Docker Desktop***, because the mechanism for accessing files on the host system is taking care of this issue.
+
 ### Access to the Internet
 
 By default, the script inside the container has no Internet access, which makes it more challenging for malicious code to transmit stolen content etc. 
