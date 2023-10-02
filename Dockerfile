@@ -1,5 +1,12 @@
-FROM mambaorg/micromamba:1.5.1
+FROM mambaorg/micromamba:1.5.1 as micromamba-patched
+# Install security updates if base image is not yet patched
+# Inspired by https://pythonspeed.com/articles/security-updates-in-docker/
+USER root
+RUN apt-get update && apt-get -y upgrade
+USER mambauser
+FROM micromamba-patched
 COPY --chown=$MAMBA_USER:$MAMBA_USER env.yaml /tmp/env.yaml
+# Install packages
 RUN micromamba install -y -n base -f /tmp/env.yaml && \
     micromamba clean --all --yes
 WORKDIR /usr/app/src
