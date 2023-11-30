@@ -14,6 +14,8 @@ Based on [`micromamba-docker`](https://github.com/mamba-org/micromamba-docker) a
 - Several techniques for limiting access rights (inspired by the [OWASP Docker Security Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html)):
     - Seccomp profile
     - Read-only file-system with `tmpfs` so that temporary files can be created.
+    - Removed [Linux Kernel capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html)
+    - Blocks adding new kernel capabilities
 
 ## Configuration and Settings
 
