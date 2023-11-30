@@ -10,5 +10,6 @@ docker run \
  --net none \
  --security-opt seccomp=seccomp-default.json \
  --read-only --tmpfs /tmp \
+ --cap-drop all \
  --rm \
  test_app "$@" 
