@@ -1,4 +1,4 @@
-FROM mambaorg/micromamba:1.5.3 as micromamba-unpatched
+FROM mambaorg/micromamba:1.5.3 as micromamba-patched
 # Install security updates if base image is not yet patched
 # Inspired by https://pythonspeed.com/articles/security-updates-in-docker/
 USER root
@@ -8,7 +8,7 @@ RUN apt-get update && apt-get -y upgrade
 # WORKDIR /etc/apt/
 USER mambauser
 
-FROM micromamba-unpatched
+FROM micromamba-patched
 USER mambauser
 COPY --chown=$MAMBA_USER:$MAMBA_USER env.yaml /tmp/env.yaml
 # Install packages
@@ -20,4 +20,6 @@ ARG MAMBA_DOCKERFILE_ACTIVATE=1  # (otherwise python will not be found)
 # -u would be needed if print statements should be visible during programm execution
 # But in general mixing logging and print is no good idea anyway.
 # ENTRYPOINT ["/usr/local/bin/_entrypoint.sh", "python", "-u", "./main.py"]
+# For debugging, use this one
+# ENTRYPOINT ["/usr/local/bin/_entrypoint.sh", "/bin/sh"]
 ENTRYPOINT ["/usr/local/bin/_entrypoint.sh", "python", "./main.py"]

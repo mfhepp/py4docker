@@ -10,7 +10,12 @@ Based on [`micromamba-docker`](https://github.com/mamba-org/micromamba-docker) a
 - **File-access is limited to the current working directory** and can be disabled entirely.
     - The actual working directory is mounted as **read-only**.
     - A subdirectory `output` is created if it does not exist and mounted for write-access.
-- **Small footprint** (<300 MB)
+- **Small footprint** (ca. 300 MB)
+- Several techniques for limiting access rights (inspired by the [OWASP Docker Security Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html)):
+    - Seccomp profile
+    - Read-only file-system with `tmpfs` so that temporary files can be created.
+    - Removed [Linux Kernel capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html)
+    - Blocks adding new kernel capabilities
 
 ## Configuration and Settings
 
@@ -52,7 +57,7 @@ More advanced settings are possible, e.g. adding a proxy or firewall inside the 
 
 You can build the image with
 
-`docker build --quiet --tag test_app .`
+`docker build --tag test_app .`
 
 ### Run
 
@@ -92,3 +97,8 @@ If you just want to redirect it to the logfile, use
 - Fix user ID / file permissions for Linux systems.
 - Improve Docker runtime options and parameters.
 - Expand support for blocking Internet access e.g. by domain or IP ranges.
+
+## LICENSE
+
+- tbd
+- The [Docker default seccomp profile file](https://github.com/moby/moby/blob/master/profiles/seccomp/default.json) is being used under an [Apache 2.0 License](https://github.com/moby/moby/blob/master/LICENSE).
