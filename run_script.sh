@@ -8,5 +8,7 @@ docker run \
  --mount type=bind,source="$(pwd)",target=/usr/app/src/data,readonly \
  --mount type=bind,source="$(pwd)/output",target=/usr/app/src/output \
  --net none \
+ --security-opt seccomp=seccomp-default.json \
+ --read-only --tmpfs /tmp \
  --rm \
- test_app "$@"
+ test_app "$@" 
