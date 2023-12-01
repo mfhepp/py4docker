@@ -10,3 +10,5 @@ build.sh
 default-stack.md
 versions.md
 output/
+src/output/
+src/data/

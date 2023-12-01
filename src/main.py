@@ -27,17 +27,17 @@ def main(
     )
     logging.info("Script started.")
     logging.info(f"Hello, {name}!")
-    
-    # Directory structure inside the container:
-    # /usr/app/src        - the source code and startup directory
-    #                       In development mode, this is the src folder inside the host's 
-    #                       current working directory
-    #                       In the regular mode, this is the src folder inside the Docker 
-    #                       container, created from the image
-    # /usr/app/src/data   - the host's current working directory
-    # /usr/app/src/output - the directory for results, mapped to ./output/ on the host
 
-    dirs = ["/usr/app/src", "/usr/app/src/data", "/usr/app/src/output" ]
+    # Directory structure inside the container:
+    # /usr/app/src         - the source code and startup directory
+    #                        In development mode, this is the src folder inside the host's
+    #                        current working directory
+    #                        In the regular mode, this is the src folder inside the Docker
+    #                        container, created from the image
+    # /usr/app/data        - the host's current working directory
+    # /usr/app/data/output - the directory for results, mapped to ./output/ on the host
+
+    dirs = ["/usr/app/src", "/usr/app/data", "/usr/app/data/output"]
     for folder in dirs:
         logging.info(f"Test for read-access to {folder}")
         files = os.listdir(folder)
@@ -72,6 +72,7 @@ def main(
     except PermissionError as err:
         logging.info(f"OK: Python script seems to have no root privileges. [{err}]")
     logging.info("Done.")
+
 
 if __name__ == "__main__":
     typer.run(main)
