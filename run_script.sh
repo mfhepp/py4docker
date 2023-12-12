@@ -80,6 +80,54 @@ done
 # Remove processed
 shift $((OPTIND-1))
 
+# Check https://github.com/jupyter/docker-stacks/blob/main/images/base-notebook/Dockerfile
+# and
+# https://docs.jupyter.org/en/latest/use/jupyter-directories.
+
+# Python's site.ENABLE_USER_SITE is True, so we add the user site directory '/home/mambauser/.local'
+# JUPYTER_PATH is not set, so we do not prepend anything to the data paths
+# JUPYTER_DATA_DIR is not set, so we use the default user-level data directory
+# JUPYTER_RUNTIME_DIR is not set, so we use the default runtime directory
+# config:
+#     /home/mambauser/.jupyter
+#     /home/mambauser/.local/etc/jupyter
+#     /opt/conda/etc/jupyter
+#     /usr/local/etc/jupyter
+#     /etc/jupyter
+# data:
+#     /home/mambauser/.local/share/jupyter
+#     /opt/conda/share/jupyter
+#     /usr/local/share/jupyter
+#     /usr/share/jupyter
+# runtime:
+#     /home/mambauser/.local/share/jupyter/runtime
+
+
+if [[ $1 = "notebook" ]]; then
+    echo "WARNING: Jupyter Notebook will have WRITE-ACCESS to $REAL_PWD"
+    read -n1 -p "Do you REALLY want to continue (Y/N)?" reply
+    echo ""
+    [ "$reply" != "Y" ] && [ "$reply" != "y" ] && echo "Aborting." && exit 1
+    IMAGE_NAME="${IMAGE_NAME}_notebook"
+    echo "Using image ${IMAGE_NAME}"
+    NOTEBOOK_DIR_MOUNT="--mount type=bind,source=$REAL_PWD,target=/usr/app/src"
+    echo "Outbound network ENABLED (Warning: The script can access the entire host network)"
+    NETWORK="--net=host"
+    # NETWORK=""
+    COMMAND="jupyter notebook --port 8888 --no-browser --notebook-dir=/usr/app/src"
+    docker run -it -p 8888:8888 \
+      $NOTEBOOK_DIR_MOUNT \
+      $NETWORK \
+      --rm \
+      $IMAGE_NAME $COMMAND 
+      # "$@"
+  echo Shutting down Jupyter Notebook.
+  exit 0
+fi
+
+      #      --read-only --tmpfs /tmp \
+
+
 # In developer mode, we need to make sure that,
 # no matter from which working directory the script is being executed, 
 #   1. the proper source code directory is used for the bind mount,
