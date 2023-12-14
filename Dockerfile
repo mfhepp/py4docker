@@ -18,6 +18,9 @@ WORKDIR /usr/app/src
 COPY src/ ./
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
 ENTRYPOINT ["/usr/local/bin/_entrypoint.sh"]
+RUN python -m ipykernel install --user
+# RUN python -m ipykernel install --user --name base --display-name "Python 3 (base)"
+# Need to make this available as ...../python kernel folder
 # For debugging, use this one
 # ENTRYPOINT ["/usr/local/bin/_entrypoint.sh", "/bin/sh"]
 # In a final application, you may want to hard-wire the entrypoint to the script:
