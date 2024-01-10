@@ -1,4 +1,4 @@
-FROM mambaorg/micromamba:1.5.3 as micromamba-patched
+FROM mambaorg/micromamba:1.5.6 as micromamba-patched
 # Install security updates if base image is not yet patched
 # Inspired by https://pythonspeed.com/articles/security-updates-in-docker/
 USER root
