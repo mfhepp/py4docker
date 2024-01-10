@@ -35,14 +35,14 @@ echo "INFO: Working directory is $REAL_PWD"
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 SOURCE_DIR=${SCRIPT_DIR}/src
 echo "INFO: Source code path is $SOURCE_DIR"
-UID=$(id -u)
-GID=$(id -g)
-echo "INFO: Local User has UID = $UID, GID = $GID"
-if [[ $UID -lt 1000 ]]; then
+UID_HOST=$(id -u)
+GID_HOST=$(id -g)
+echo "INFO: Local User has UID = $UID_HOST, GID = $GID_HOST"
+if [[ $UID_HOST -lt 1000 ]]; then
     echo "WARNING: User ID is < 1000, not passed to container user"
     USER_MAPPING=""
 else
-    USER_MAPPING="--user $UID:$GID"
+    USER_MAPPING="--user $UID_HOST:$GID_HOST"
 fi
 while getopts ":dDin" opt; do
   case ${opt} in
