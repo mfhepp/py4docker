@@ -131,7 +131,7 @@ The motivation for two images is that you will keep an image of your last workin
 
 ### Updating an Image
 
-Due to Docker caching mechanisms, **new versions of Python packages or security updates to the Debian system will only be installed** if you tell Docker to ignore the cached previous stages when building the image (or if you change `env.yaml``). 
+Due to Docker caching mechanisms, **new versions of Python packages or security updates to the Debian system will only be installed** if you tell Docker to ignore the cached previous stages when building the image (or if you change `env.yaml`). 
 
 This can be done with the `-f` (for _force_) option:
 
@@ -265,13 +265,13 @@ It is recommended that you create a simplified version of the `run_script.sh` sc
 
 ### Creating an Alias
 
-If you want to be able to run the script just by a single command, like `my_script FooBar`, then add the following lines to your `.bash_profile` file:
+If you want to be able to run the script just by a single command, like `my_script FooBar`, then add the following lines to your `.bash_profile` file, like so (`~/foo/bar/py4docker/` is the absolute path to the project in this example):
 
 ```bash
-alias my_script="bash run_script.sh"
+alias my_script="bash ~/foo/bar/py4docker/run_script.sh"
 ```
 
-It is **strongly recommended to use an absolute path in the alias** (otherwise, one random of multiple copies of `run_script.sh` with different functionality might be executed depending on your $PATH).
+It is **strongly recommended to use an absolute path in the alias** (otherwise, one random of multiple copies of `run_script.sh` with different functionality might be executed depending on your `$PATH`).
 
 **Warning:** An alias will allow you to run the script from any folder on your system, and that folder will be available for read-access to the script as `/usr/app/data`.
 
@@ -313,7 +313,7 @@ On Linux machines, you may run into problems accessing the files in the `output`
 
 This should not be a problem on Apple OSX systems running ***Docker Desktop***, because the mechanism for accessing files on the host system is taking care of this issue.
 
-**Update 2024-01-10:** We are now setting the internal user's UID and GID to that of the user starting the `run_script.sh` script, as long as the UID is >= 1000. This should mitigate or solve the issue.
+**Update 2024-01-10:** We are now setting the internal user's UID and GID to that of the user starting the `run_script.sh` script, as long as the UID is >= 1000. This should mitigate or solve the issue. **If you run the script as a root user, the user UID and GID are *not passed* for security reasons.** You have to [configure Docker for rootless mode](https://docs.docker.com/engine/security/rootless/), which is a good practice anyway.
 
 ### Access to the Internet
 
