@@ -136,7 +136,7 @@ esac
 # Create output directory if not exists
 mkdir -p output
 
-docker run \
+sudo docker run \
 $USER_MAPPING \
 $PARAMETERS \
 $MOUNT_BEFORE_PWD \
