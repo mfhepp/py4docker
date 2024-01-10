@@ -10,6 +10,8 @@ Based on [`micromamba-docker`](https://github.com/mamba-org/micromamba-docker) a
 - **File-access is limited to the current working directory** and can be disabled entirely.
     - The actual working directory is mounted as **read-only**.
     - A subdirectory `output` is created if it does not exist and mounted for write-access.
+    - The non-root user `mambauser` inside the container will use the user ID (UID) and group ID (GID) of the user starting the `run_script.sh` script, if the UID is >=1000 (i.e. a non-system user on most Linux systems). This will mitigate [**file permission issues**](https://mydeveloperplanet.com/2022/10/19/docker-files-and-volumes-permission-denied/).
+
 - **Small footprint** (ca. 300 MB)
 - Several techniques for limiting access rights (inspired by the [OWASP Docker Security Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html)):
     - Seccomp profile
@@ -310,6 +312,8 @@ All done! ✨ 🍰 ✨
 On Linux machines, you may run into problems accessing the files in the `output` folder, because the user ID inside the container differs from your user ID on the host system. For details, see e.g. <https://www.joyfulbikeshedding.com/blog/2021-03-15-docker-and-the-host-filesystem-owner-matching-problem.html>. 
 
 This should not be a problem on Apple OSX systems running ***Docker Desktop***, because the mechanism for accessing files on the host system is taking care of this issue.
+
+**Update 2024-01-10:** We are now setting the internal user's UID and GID to that of the user starting the `run_script.sh` script, as long as the UID is >= 1000. This should mitigate or solve the issue.
 
 ### Access to the Internet
 
