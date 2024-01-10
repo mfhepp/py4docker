@@ -336,3 +336,7 @@ More advanced settings are possible, e.g. adding a proxy or firewall inside the 
 
 - tbd. Not yet decided; please ask!
 - The [Docker default seccomp profile file](https://github.com/moby/moby/blob/master/profiles/seccomp/default.json) is being used under an [Apache 2.0 License](https://github.com/moby/moby/blob/master/LICENSE).
+
+## Related Projects
+
+- <https://github.com/nginxinc/docker-nginx-unprivileged/pkgs/container/nginx-unprivileged>

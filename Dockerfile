@@ -6,16 +6,20 @@ RUN apt-get update && apt-get -y upgrade
 # ENTRYPOINT ["/usr/local/bin/_entrypoint.sh"]
 # cat /etc/apt/sources.list
 # WORKDIR /etc/apt/
-USER mambauser
+USER $MAMBA_USER
 
 FROM micromamba-patched
-USER mambauser
+USER $MAMBA_USER
 COPY --chown=$MAMBA_USER:$MAMBA_USER env.yaml /tmp/env.yaml
 # Install packages
 RUN micromamba install -y -n base -f /tmp/env.yaml && \
     micromamba clean --all --yes
 WORKDIR /usr/app/src
 COPY --chown=$MAMBA_USER:$MAMBA_USER src/ ./
+# Attempt to make the external volume accessible on Linux systems
+# Credits: https://stackoverflow.com/questions/66349101/docker-non-root-user-does-not-have-writing-permissions-when-using-volumes
+RUN mkdir /usr/app/data/output && chown $MAMBA_USER /usr/app/data/output
+
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
 ENTRYPOINT ["/usr/local/bin/_entrypoint.sh"]
 # For debugging, use this one
