@@ -325,6 +325,9 @@ Tried:
     - <https://stackoverflow.com/questions/56019914/docker-user-cannot-write-to-mounted-folder>
     - Change mount point to $HOME of non-root user
     - <https://github.com/moby/moby/issues/2259>
+
+See also [my issue #407 on Github](https://github.com/mamba-org/micromamba-docker/issues/407).
+
 On Linux machines, you may run into problems accessing the files in the `output` folder, because the user ID inside the container differs from your user ID on the host system. For details, see e.g. <https://www.joyfulbikeshedding.com/blog/2021-03-15-docker-and-the-host-filesystem-owner-matching-problem.html>. 
 
 This should not be a problem on Apple OSX systems running ***Docker Desktop***, because the mechanism for accessing files on the host system is taking care of this issue.
