@@ -19,6 +19,8 @@ WORKDIR /usr/app/src
 COPY --chown=$MAMBA_USER:$MAMBA_USER src/ ./
 # Attempt to make the external volume accessible on Linux systems
 # Credits: https://stackoverflow.com/questions/66349101/docker-non-root-user-does-not-have-writing-permissions-when-using-volumes
+WORKDIR /usr/app/data/output
+RUN mkdir output && chown -R $MAMBA_USER:$MAMBA_USER /usr/app/data/output
 # RUN mkdir /usr/app/data/output && chown $MAMBA_USER /usr/app/data/output
 
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
