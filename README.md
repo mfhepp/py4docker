@@ -372,3 +372,8 @@ More advanced settings are possible, e.g. adding a proxy or firewall inside the 
 ## Related Projects
 
 - <https://github.com/nginxinc/docker-nginx-unprivileged/pkgs/container/nginx-unprivileged>
+
+## Changelog
+
+See [commits on Github](https://github.com/mfhepp/py4docker/commits/main/).
+
