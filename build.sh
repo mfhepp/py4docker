@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Shell script for building Docker image
 
+# docker build . -t mycromamba --build-arg="MAMBA_USER=$USER" \
+# --build-arg="MAMBA_USER_ID=$(id -u)" \
+# --build-arg="MAMBA_USER_GID=$(id -g)"
+
 IMAGE_NAME="test_app"
 
 usage ()
