@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Shell script for building Docker image
-
+# Attempt to set the user ID etc. at build time did not change much
 # docker build . -t mycromamba --build-arg="MAMBA_USER=$USER" \
 # --build-arg="MAMBA_USER_ID=$(id -u)" \
 # --build-arg="MAMBA_USER_GID=$(id -g)"

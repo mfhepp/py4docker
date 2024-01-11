@@ -135,10 +135,10 @@ esac
 
 # Create output directory if not exists
 mkdir -p output
-# $USER_MAPPING \ removed for the moment bc we change the user at build time
 
 docker run \
 $PARAMETERS \
+$USER_MAPPING \
 $MOUNT_BEFORE_PWD \
  --mount type=bind,source=$REAL_PWD,target=/usr/app/data,readonly \
  --mount type=bind,source=$REAL_PWD/output,target=/usr/app/data/output \
