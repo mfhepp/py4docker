@@ -319,8 +319,12 @@ Tried:
 
 **The root user INSIDE the container can access the mounted volume.** So it seems that the mambauser has insufficient rights.
 
-- **This looks very promising:** <https://jtreminio.com/blog/running-docker-containers-as-current-host-user/#ok-so-what-actually-works>
-
+- **This looks promising:** 
+    - <https://jtreminio.com/blog/running-docker-containers-as-current-host-user/#ok-so-what-actually-works>
+    - <https://stackoverflow.com/questions/39397548/how-to-give-non-root-user-in-docker-container-access-to-a-volume-mounted-on-the>
+    - <https://stackoverflow.com/questions/56019914/docker-user-cannot-write-to-mounted-folder>
+    - Change mount point to $HOME of non-root user
+    - <https://github.com/moby/moby/issues/2259>
 On Linux machines, you may run into problems accessing the files in the `output` folder, because the user ID inside the container differs from your user ID on the host system. For details, see e.g. <https://www.joyfulbikeshedding.com/blog/2021-03-15-docker-and-the-host-filesystem-owner-matching-problem.html>. 
 
 This should not be a problem on Apple OSX systems running ***Docker Desktop***, because the mechanism for accessing files on the host system is taking care of this issue.
