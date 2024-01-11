@@ -39,7 +39,8 @@ UID_HOST=$(id -u)
 GID_HOST=$(id -g)
 echo "INFO: Local User has UID = $UID_HOST, GID = $GID_HOST"
 if [[ $UID_HOST -lt 1000 ]]; then
-    echo "WARNING: User ID is < 1000, not passed to container user"
+    echo "INFO: The User ID is < 1000, not passed to container user"
+    echo "Most likely, you are running Docker Desktop on OSX."
     USER_MAPPING=""
 else
     USER_MAPPING="--user $UID_HOST:$GID_HOST"
