@@ -325,6 +325,7 @@ Tried:
     - <https://stackoverflow.com/questions/56019914/docker-user-cannot-write-to-mounted-folder>
     - Change mount point to $HOME of non-root user
     - <https://github.com/moby/moby/issues/2259>
+    - <https://mydeveloperplanet.com/2022/10/19/docker-files-and-volumes-permission-denied/>
 
 See also [my issue #407 on Github](https://github.com/mamba-org/micromamba-docker/issues/407).
 
