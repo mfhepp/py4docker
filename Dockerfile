@@ -1,3 +1,4 @@
+# Stage 1
 FROM mambaorg/micromamba:1.5.6 as micromamba-patched
 # Install security updates if base image is not yet patched
 # Inspired by https://pythonspeed.com/articles/security-updates-in-docker/
@@ -7,7 +8,7 @@ RUN apt-get update && apt-get -y upgrade
 # cat /etc/apt/sources.list
 # WORKDIR /etc/apt/
 USER $MAMBA_USER
-
+# Stage 2
 FROM micromamba-patched
 USER $MAMBA_USER
 COPY --chown=$MAMBA_USER:$MAMBA_USER env.yaml /tmp/env.yaml
@@ -16,9 +17,6 @@ RUN micromamba install -y -n base -f /tmp/env.yaml && \
     micromamba clean --all --yes
 WORKDIR /usr/app/src
 COPY --chown=$MAMBA_USER:$MAMBA_USER src/ ./
-# Attempt to make the external volume accessible on Linux systems
-# Credits: https://stackoverflow.com/questions/66349101/docker-non-root-user-does-not-have-writing-permissions-when-using-volumes
-# RUN mkdir /usr/app/data/output && chown -R $MAMBA_USER:$MAMBA_USER /usr/app/data/output
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
 ENTRYPOINT ["/usr/local/bin/_entrypoint.sh"]
 # For debugging, use this one

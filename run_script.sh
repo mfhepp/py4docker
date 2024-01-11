@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Shell script for starting Docker container
-# TBD:  - Check other useful Docker CLI options
-# 
+# Shell script for starting Docker container with main.py
+# TODO:  - Check other useful Docker CLI options
 
 SOURCE_MOUNT=""
 NETWORK="--net=none"
