@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 # Shell script for building Docker image
+# It is possible to set UID, GID, and username to the matching 
+# user on the host by building a local image from mambaorg/micromamba
+#    git clone https://github.com/mamba-org/micromamba-docker.git
+#    cd micromamba-docker
+#    docker build . -t micromamba_local_user --build-arg="MAMBA_USER=$USER" \
+#      --build-arg="MAMBA_USER_ID=$(id -u)" \
+#      --build-arg="MAMBA_USER_GID=$(id -g)"
+# and then change the base image in the Dockerfile from e.g.
+#    mambaorg/micromamba:1.5.6
+# to
+#    micromamba_local_user
 
 IMAGE_NAME="test_app"
 

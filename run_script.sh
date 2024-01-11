@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Shell script for starting Docker container
-# TBD:  - Check other useful Docker CLI options
-# 
+# Shell script for starting Docker container with main.py
+# TODO:  - Check other useful Docker CLI options
 
 SOURCE_MOUNT=""
 NETWORK="--net=none"
@@ -35,7 +34,16 @@ echo "INFO: Working directory is $REAL_PWD"
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 SOURCE_DIR=${SCRIPT_DIR}/src
 echo "INFO: Source code path is $SOURCE_DIR"
-
+UID_HOST=$(id -u)
+GID_HOST=$(id -g)
+echo "INFO: Local User has UID = $UID_HOST, GID = $GID_HOST"
+if [[ $UID_HOST -lt 1000 ]]; then
+    echo "INFO: The User ID is < 1000, not passed to container user"
+    echo "Most likely, you are running Docker Desktop on OSX."
+    USER_MAPPING=""
+else
+    USER_MAPPING="--user $UID_HOST:$GID_HOST"
+fi
 while getopts ":dDin" opt; do
   case ${opt} in
     d)
@@ -130,6 +138,7 @@ mkdir -p output
 
 docker run \
 $PARAMETERS \
+$USER_MAPPING \
 $MOUNT_BEFORE_PWD \
  --mount type=bind,source=$REAL_PWD,target=/usr/app/data,readonly \
  --mount type=bind,source=$REAL_PWD/output,target=/usr/app/data/output \

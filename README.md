@@ -10,6 +10,8 @@ Based on [`micromamba-docker`](https://github.com/mamba-org/micromamba-docker) a
 - **File-access is limited to the current working directory** and can be disabled entirely.
     - The actual working directory is mounted as **read-only**.
     - A subdirectory `output` is created if it does not exist and mounted for write-access.
+    - The non-root user `mambauser` inside the container will use the user ID (UID) and group ID (GID) of the user starting the `run_script.sh` script, if the UID is >=1000 (i.e. a non-system user on most Linux systems). This will mitigate [**file permission issues**](https://mydeveloperplanet.com/2022/10/19/docker-files-and-volumes-permission-denied/).
+
 - **Small footprint** (ca. 300 MB)
 - Several techniques for limiting access rights (inspired by the [OWASP Docker Security Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html)):
     - Seccomp profile
@@ -81,7 +83,13 @@ IMAGE_NAME="my_crawler"
 
 ## Folder Structure inside the Container
 
-Your Python script will see the following directory structure
+Your Python script will see the following directory structure:
+
+```bash
+/usr/app/src
+/usr/app/data
+/usr/app/data/output
+```
 
 - `/usr/app/src`: This is the source code and startup directory.
 In the regular mode, this is the `src` folder inside the Docker container, created from the image.
@@ -92,7 +100,7 @@ In **development mode** (see below for details), this is the `src` **in the dire
 
 **Important:** The mapping of **directories from your local machine to these paths** inside the container **depends on from where you start the `run_script.sh` script.** The rationale is that the code can only see the data from the current (working) directory and only write to a dedicated `output` subdirectory therein. A malicious script can hence not modify or delete files in your working directory. But if you start the script from your user root directory `~/`, then the script can read all files from all subdirectories.
 
-In the development mode, the inner workings are a bit more complicated. Please the comments in the `run_script.sh` file for details.
+In the development mode, the inner workings are a bit more complicated. Please see the comments in the `run_script.sh` file for details.
 
 ## Building Your Docker Image with `build.sh`
 
@@ -113,7 +121,7 @@ Go to your project directory and execute:
 ```bash
 ./build.sh -d
 ```
-This builds a development image, named `test_app_dev` (or whatever you chose for `test_app`; the suffix is added automatically).
+This builds a development image, named `test_app_dev` (or whatever you chose for `test_app`; the suffix `_dev` is added automatically).
 
 ### Image for Production
 
@@ -127,9 +135,11 @@ This builds an image for production, named `test_app` (or whatever you chose).
 
 The motivation for two images is that you will keep an image of your last working version available while you are developing (e.g. on feature branches).
 
+Also, in the development image, the local code is **mapped to `/usr/app/src` and always in sync with your version** on the host machine.
+
 ### Updating an Image
 
-Due to Docker caching mechanisms, **new versions of Python packages or security updates to the Debian system will only be installed** if you tell Docker to ignore the cached previous stages when building the image (or if you change `env.yaml``). 
+Due to Docker caching mechanisms, **new versions of Python packages or security updates to the Debian system will only be installed** if you tell Docker to ignore the cached previous stages when building the image (or if you change `env.yaml`). 
 
 This can be done with the `-f` (for _force_) option:
 
@@ -147,7 +157,7 @@ Note that this may change the installed versions of Python packages. There is cu
 
 ## Running the Script with `run_script.sh`
 
-This script starts your code in `main.py` inside a Docker container.
+This script starts the code in `main.py` inside a Docker container.
 
 ```bash
 Usage: ./run_script.sh [OPTIONS] [APP_ARGS]
@@ -165,7 +175,7 @@ It supports two modes:
 
 ### Development Mode
 
-In this mode, **the local version of your `src` folder** is mounted within the Docker container. 
+In this mode, **the local version of your `src` folder** is mounted within the Docker container. Also, **the deevlopment image is being used.**
 
 In other words, **if you change your code, the new code will be executed** via `run_script.sh`.
 
@@ -200,7 +210,7 @@ You can execute any Linux commands in there, e.g.
 ls
 ```
 
-In order to run your script, just type
+In order to run your script in the interactive mode, just type
 
 `python ./main.py`
 
@@ -227,6 +237,8 @@ You can grant your script access to the host`s network with
 ```
 
 While this is necessary for many types of applications (like Web crawlers), it introduces a much larger risk for malicious code, in particular the transmission of secrets stolen from your machine or other data to a remote server.
+
+**Note:** It is possible that access to the Internet will not work if you are **running the Docker daemon in rootless mode.**
 
 ## Logging
 
@@ -263,13 +275,13 @@ It is recommended that you create a simplified version of the `run_script.sh` sc
 
 ### Creating an Alias
 
-If you want to be able to run the script just by a single command, like `my_script FooBar`, then add the following lines to your `.bash_profile` file:
+If you want to be able to run the script just by a single command, like `my_script FooBar`, then add the following lines to your `.bash_profile` file, like so (`~/foo/bar/py4docker/` is the *absolute path* to the project in this example):
 
 ```bash
-alias my_script="bash run_script.sh"
+alias my_script="bash ~/foo/bar/py4docker/run_script.sh"
 ```
 
-It is **strongly recommended to use an absolute path in the alias** (otherwise, one random of multiple copies of `run_script.sh` with different functionality might be executed depending on your $PATH).
+It is **strongly recommended to use an absolute path in the alias** (otherwise, one random version of multiple copies of `run_script.sh` with different functionality might be executed depending on your `$PATH` and from where you run the command).
 
 **Warning:** An alias will allow you to run the script from any folder on your system, and that folder will be available for read-access to the script as `/usr/app/data`.
 
@@ -305,11 +317,35 @@ All done! ✨ 🍰 ✨
 ```
 **Be warned: Make sure you understand the security implications!**
 
-### User ID Mismatch Problems
+### User ID Mismatch Problems on Linux
 
-On Linux machines, you may run into problems accessing the files in the `output` folder, because the user ID inside the container differs from your user ID on the host system. For details, see e.g. <https://www.joyfulbikeshedding.com/blog/2021-03-15-docker-and-the-host-filesystem-owner-matching-problem.html>. 
+**Note:** The following problem is not relevant if you are using Docker Desktop on OSX (and, not tested), Docker Desktop on a Linux machine. It only applies to plain Docker installations, e.g. on a production server.
 
-This should not be a problem on Apple OSX systems running ***Docker Desktop***, because the mechanism for accessing files on the host system is taking care of this issue.
+#### Background
+
+In order to be able to write to the `output` directory within the current working directory on the host machine on a plain Docker installation on Linux, it is necessary to use UID and GID of the user inside the container.
+
+Also, you may run into problems accessing the files in the `output` folder from either the container or on the host machine if the user ID used inside the container differs from your user ID on the host system.
+
+#### Status
+
+In `run_script.sh`, we are setting the internal user's UID and GID to that of the user starting the `run_script.sh` script, as long as the UID is >= 1000. This should mitigate or solve the issue. 
+
+If you run the script **as a root user on the host machine, the user UID and GID are *not passed* for security reasons.** You have to [configure Docker for rootless mode](https://docs.docker.com/engine/security/rootless/), which is a good practice anyway.
+
+#### Troubleshooting
+
+1. When running the Docker daemon in rootless mode, make sure you set the proper CLI content:
+    - `docker context use rootless`
+2. You may encounter problems if the user on the host machine is member of the `sudo` group or has root privileges. Create a dedicated standard user to run the container.
+3. Further reading:
+    - <https://www.joyfulbikeshedding.com/blog/2021-03-15-docker-and-the-host-filesystem-owner-matching-problem.html>
+    - <https://jtreminio.com/blog/running-docker-containers-as-current-host-user/#ok-so-what-actually-works>
+    - <https://stackoverflow.com/questions/39397548/how-to-give-non-root-user-in-docker-container-access-to-a-volume-mounted-on-the>
+    - <https://stackoverflow.com/questions/56019914/docker-user-cannot-write-to-mounted-folder>
+    - <https://github.com/moby/moby/issues/2259>
+    - <https://mydeveloperplanet.com/2022/10/19/docker-files-and-volumes-permission-denied/>
+    - [My micromamba-docker issue #407 on Github](https://github.com/mamba-org/micromamba-docker/issues/407).
 
 ### Access to the Internet
 
@@ -325,10 +361,19 @@ More advanced settings are possible, e.g. adding a proxy or firewall inside the 
 
 ## Limitations and Ideas for Improvement
 
-- The code is currently maintained for Docker Desktop on Apple Silicon only. It may work on other platforms, but I have no time for testing at the moment. In particular, there may be issues with user ID / file permissions on Linux systems if the script writes to the `output` folder.
+- The code is currently maintained for Docker Desktop on Apple Silicon only. It may work on other platforms, but I have no time for testing at the moment.
 - Expand support for blocking and logging Internet access e.g. by domain or IP ranges is a priority at my side, but non-trivial.
 
 ## LICENSE
 
 - tbd. Not yet decided; please ask!
 - The [Docker default seccomp profile file](https://github.com/moby/moby/blob/master/profiles/seccomp/default.json) is being used under an [Apache 2.0 License](https://github.com/moby/moby/blob/master/LICENSE).
+
+## Related Projects
+
+- <https://github.com/nginxinc/docker-nginx-unprivileged/pkgs/container/nginx-unprivileged>
+
+## Changelog
+
+See [commits on Github](https://github.com/mfhepp/py4docker/commits/main/).
+
