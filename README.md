@@ -309,6 +309,18 @@ All done! ✨ 🍰 ✨
 
 ### User ID Mismatch Problems
 
+**TODO:** Fix this issue. On a Linux machine, the output folder cannot be written to. 
+Tried:
+
+- setting local user UID/GID via `--user`
+- setting `MAMBA_USER` etc. in the build process for the base image
+- omitting security profile etc.
+- setting all bind mounts as writeable
+
+**The root user INSIDE the container can access the mounted volume.** So it seems that the mambauser has insufficient rights.
+
+- **This looks very promising:** <https://jtreminio.com/blog/running-docker-containers-as-current-host-user/#ok-so-what-actually-works>
+
 On Linux machines, you may run into problems accessing the files in the `output` folder, because the user ID inside the container differs from your user ID on the host system. For details, see e.g. <https://www.joyfulbikeshedding.com/blog/2021-03-15-docker-and-the-host-filesystem-owner-matching-problem.html>. 
 
 This should not be a problem on Apple OSX systems running ***Docker Desktop***, because the mechanism for accessing files on the host system is taking care of this issue.
