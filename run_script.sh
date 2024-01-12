@@ -2,17 +2,21 @@
 # Shell script for starting Docker container with main.py
 # TODO:  - Check other useful Docker CLI options
 
+APPLICATION_ID="test_app"
+# Change to name of alternate Python environment if needed
+# Example:
+# DIGEST="foo" for user/test_app:foo from foo.yaml
+DIGEST=""
 SOURCE_MOUNT=""
 NETWORK="--net=none"
 PARAMETERS=""
-IMAGE_NAME="test_app"
-COMMAND="python ./main.py"
 # Change to COMMAND="python -u ./main.py" if you want print() statements 
 # to be visible on stdout (default: logging only)
+COMMAND="python ./main.py"
 
 usage ()
 {
-    printf "Starts the ${IMAGE_NAME} application inside a Docker container\n"
+    printf "Starts the ${USER}/${IMAGE_NAME} application inside a Docker container\n"
     printf 'Usage: %s [OPTIONS] [APP_ARGS]\n\n' "$0"
     printf 'Options:\n'
     printf '  -d: (D)evelopment mode (mount local volume, as read-only)\n'
@@ -34,6 +38,7 @@ echo "INFO: Working directory is $REAL_PWD"
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 SOURCE_DIR=${SCRIPT_DIR}/src
 echo "INFO: Source code path is $SOURCE_DIR"
+# Mapping user id and user group for Linux bind mounts
 UID_HOST=$(id -u)
 GID_HOST=$(id -g)
 echo "INFO: Local User has UID = $UID_HOST, GID = $GID_HOST"
@@ -47,45 +52,53 @@ fi
 while getopts ":dDin" opt; do
   case ${opt} in
     d)
-      if [ -n "$DEV" ]; then
+      if [ -n "$DIGEST_SUFFIX" ]; then
       echo "ERROR: Incompatible options -d and -D. Aborting."
       exit 1
       else
-      DEV=TRUE
-      echo "Development mode enabled (running code from local file)"
-      echo "Using image ${IMAGE_NAME}_dev"
+      echo "INFO: Development mode enabled (running code from local file)"
+      DIGEST_SUFFIX="dev"
+#      echo "Using image ${IMAGE_NAME}_dev"
       SOURCE_MOUNT="--mount type=bind,source=$SCRIPT_DIR/src,target=/usr/app/src,readonly"
-      IMAGE_NAME="${IMAGE_NAME}_dev"
+#      IMAGE_NAME="${IMAGE_NAME}_dev"
       fi
       ;;
     D)
-      if [ -n "$DEV" ]; then
+      if [ -n "$DIGEST_SUFFIX" ]; then
       echo "ERROR: Incompatible options -d and -D. Aborting."
       exit 1
       else
-      DEV=TRUE    
-      echo "EXPERT development mode enabled (running code from local file)"
-      echo "Write access granted to $SCRIPT_DIR/src"
+      echo "INFO: EXPERT development mode enabled (running code from local file)"
+      echo "WARNING: Write access granted to $SCRIPT_DIR/src"
       read -n1 -p "Do you REALLY want to continue (Y/N)?" reply
       echo ""
       [ "$reply" != "Y" ] && [ "$reply" != "y" ] && echo "Aborting." && exit 1
-      echo "Using image ${IMAGE_NAME}_dev"
+      DIGEST_SUFFIX="dev"
+      # echo "Using image ${IMAGE_NAME}_dev"
       SOURCE_MOUNT="--mount type=bind,source=$SCRIPT_DIR/src,target=/usr/app/src"
-      IMAGE_NAME="${IMAGE_NAME}_dev"
+      # IMAGE_NAME="${IMAGE_NAME}_dev"
       fi
       ;;      
     i)
-      echo "Interactive mode enabled, keeping terminal open (use 'exit' to quit)"
+      echo "INFO: Interactive mode enabled, keeping terminal open (use 'exit' to quit)"
       PARAMETERS="-it"
       COMMAND="/bin/sh"
       ;;
     n)
-      echo "Outbound network ENABLED (Warning: The script can access the entire host network)"
+      echo "INFO: Outbound network ENABLED (Warning: The script can access the entire host network)"
       NETWORK="--net=host"
       ;;        
   esac
 done
-# Remove processed
+if [ -n "$DIGEST" ]; then
+  # user:test_app:foo -> user:test_app:foo-dev
+  DIGEST="$DIGEST${DIGEST_SUFFIX:+-DIGEST_SUFFIX}"
+else
+  DIGEST=$DIGEST_SUFFIX
+fi
+IMAGE_NAME="${USER}/${APPLICATION_ID}${DIGEST:+:$DIGEST}"
+
+# Remove processed arguments
 shift $((OPTIND-1))
 
 # In developer mode, we need to make sure that,
@@ -117,7 +130,7 @@ case $SOURCE_DIR/ in
     FIX_OVERLAP_MOUNT="--mount type=volume,target=/usr/app/data/${SOURCE_DIR#$REAL_PWD/}"
     # We will FIRST mount the upper host directory, in this case the PWD
     MOUNT_AFTER_PWD=$SOURCE_MOUNT
-    echo DEBUG: Blocking overlap via $FIX_OVERLAP_MOUNT
+    echo INFO: Blocking overlapping paths via $FIX_OVERLAP_MOUNT
     ;;
     *) echo "INFO: src/ IS NOT in $REAL_PWD/*" ;;
 esac
@@ -128,11 +141,12 @@ case $REAL_PWD/ in
     FIX_OVERLAP_MOUNT="--mount type=volume,target=/usr/app/src/${REAL_PWD#$SOURCE_DIR/}"
     # We will FIRST mount the upper host directory, in this case the source directory
     MOUNT_BEFORE_PWD=$SOURCE_MOUNT
-    echo DEBUG: Blocking overlap via $FIX_OVERLAP_MOUNT
+    echo INFO: Blocking overlapping paths via $FIX_OVERLAP_MOUNT
     ;;
     *) echo "INFO: $REAL_PWD IS NOT in src/*" ;;
 esac
 
+echo INFO: Docker image is = $IMAGE_NAME
 # Create output directory if not exists
 mkdir -p output
 
