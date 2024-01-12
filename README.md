@@ -74,9 +74,9 @@ The script should run and report its progress, like so
 
 Now, you can start working on your own code.
 
-1. In `build.sh` and `run_script.sh`, change the string `test_app` to a name for your application (e.g. `my_crawler`), like so
+1. In `build.sh` **and** `run_script.sh`, change the string `test_app` to a name for your application (e.g. `my_crawler`), like so
 ```bash
-IMAGE_NAME="my_crawler"
+APPLICATION_ID="my_crawler"
 ```
 2. Edit the list of Python packages in `env.yaml`
 3. You may want to change the name of the starter script `run_script.sh` to the name of your project (like `my_crawler.sh`).
@@ -92,13 +92,15 @@ Your Python script will see the following directory structure:
 ```
 
 - `/usr/app/src`: This is the source code and startup directory.
-In the regular mode, this is the `src` folder inside the Docker container, created from the image.
-It will not be updated until you re-build the image.
-In **development mode** (see below for details), this is the `src` **in the directory that contains the `run_script.sh` script.** Symbolic links will be resolved.
+In the regular mode, this is the `src` folder inside the Docker container, created from the image. 
+    - **It will not be updated until you re-build the image.**
+    - In **development mode** (see below for details), this is the `src` **in the directory that contains the `run_script.sh` script.** Symbolic links will be resolved.
 - `/usr/app/data`: This is the host's current working directory, i.e. from where you start the `run_script.sh` script.
-- `/usr/app/data/output`: This is a writeable directory for results, mapped to the `output` folder relative to the host's current working directory
+- `/usr/app/data/output`: This is a writeable directory for results, mapped to the `output` folder within the current working directory on the host.
 
-**Important:** The mapping of **directories from your local machine to these paths** inside the container **depends on from where you start the `run_script.sh` script.** The rationale is that the code can only see the data from the current (working) directory and only write to a dedicated `output` subdirectory therein. A malicious script can hence not modify or delete files in your working directory. But if you start the script from your user root directory `~/`, then the script can read all files from all subdirectories.
+**Important:** 
+1. The mapping of **directories from your local machine to these paths** inside the container **depends on from where you start the `run_script.sh` script.** The rationale is that the code can only see the data from the current (working) directory and only write to a dedicated `output` subdirectory therein. 
+2. A malicious script or library can hence not modify or delete files in your working directory. **But if you start the script from your user root directory** `~/`, then **the script can read all files from all subdirectories.**
 
 In the development mode, the inner workings are a bit more complicated. Please see the comments in the `run_script.sh` file for details.
 
@@ -107,11 +109,27 @@ In the development mode, the inner workings are a bit more complicated. Please s
 Before you can run your own code, you need to build a Docker image with `build.sh`:
 
 ```bash
-Usage: ./build.sh [OPTIONS] 
+Usage: ./build.sh [OPTIONS] [<env_name>.yaml]
 
 Option(s):
-  -d: development mode (create test_app_dev)
-  -f: force fresh build, ignoring caches (will update Python packages)
+  -d: development mode (create <username>/test_app:dev)
+  -f: force fresh build, ignoring cached build stages (will e.g. update Python packages)
+  -n: Jupyter Notebook mode (create <username>/notebook or <username>/notebook:<env_name>)
+```
+
+**Note:** The notebook mode is not yet fully functional.
+
+### Using another YAML environment file
+
+You can pass the name of another YAML environment file as CLI argument (the file extension `.yaml` is added automatically.). The name of the YAML file will be added to the Docker image tag, like so:
+
+```bash
+# Use foo.yaml and create the image 
+#   <username>/test_app:foo
+./build.sh foo
+# Use foo.yaml in development mode and create the image 
+#   <username>/test_app:foo-dev
+./build.sh -d foo
 ```
 
 ### Development Image
@@ -121,7 +139,7 @@ Go to your project directory and execute:
 ```bash
 ./build.sh -d
 ```
-This builds a development image, named `test_app_dev` (or whatever you chose for `test_app`; the suffix `_dev` is added automatically).
+This builds a development image, named `<username>/test_app:dev` (or whatever you chose for `test_app`; the digest `:dev` is added automatically).
 
 ### Image for Production
 
@@ -131,7 +149,7 @@ When done, you can build a production image with
 ./build.sh
 ```
 
-This builds an image for production, named `test_app` (or whatever you chose).
+This builds an image for production, named `<username>/test_app` (or whatever you chose).
 
 The motivation for two images is that you will keep an image of your last working version available while you are developing (e.g. on feature branches).
 
@@ -164,9 +182,10 @@ Usage: ./run_script.sh [OPTIONS] [APP_ARGS]
 
 Options:
   -d: (D)evelopment mode (mount local volume, as read-only)
+  -D: Expert (D)evelopment mode with WRITE ACCESS to src/ 
   -i: (i)nteractive mode (keep terminal open and start with bash)
   -n: Allow outbound (N)etwork access to host network
-  --help: Show help
+  --help: Show help  
 ```
 
 All other arguments and options will be passed to your `main.py` application.
@@ -183,7 +202,7 @@ In other words, **if you change your code, the new code will be executed** via `
 ./run_script.sh -d
 ```
 
-Try to avoid using this mode from within the `src` directory.
+**Warning:** Try to avoid using this mode from within the `src` directory, as malicious code could change your executable components.
 
 ### Production Mode
 
@@ -275,9 +294,10 @@ It is recommended that you create a simplified version of the `run_script.sh` sc
 
 ### Creating an Alias
 
-If you want to be able to run the script just by a single command, like `my_script FooBar`, then add the following lines to your `.bash_profile` file, like so (`~/foo/bar/py4docker/` is the *absolute path* to the project in this example):
+If you want to be able to run the script just by a single command, like `my_script FooBar`, then add the following lines to your `.bash_profile` file, like so:
 
 ```bash
+# ~/foo/bar/py4docker/ is the absolute path to the project in this example
 alias my_script="bash ~/foo/bar/py4docker/run_script.sh"
 ```
 
@@ -361,12 +381,12 @@ More advanced settings are possible, e.g. adding a proxy or firewall inside the 
 
 ## Limitations and Ideas for Improvement
 
-- The code is currently maintained for Docker Desktop on Apple Silicon only. It may work on other platforms, but I have no time for testing at the moment.
+- The code is currently maintained for Docker Desktop on Apple Silicon only. It may work on other platforms, but I have no time for testing at the moment. It seems to work on Debian.
 - Expand support for blocking and logging Internet access e.g. by domain or IP ranges is a priority at my side, but non-trivial.
 
 ## LICENSE
 
-- tbd. Not yet decided; please ask!
+- TODO: Not yet decided; please ask if urgent!
 - The [Docker default seccomp profile file](https://github.com/moby/moby/blob/master/profiles/seccomp/default.json) is being used under an [Apache 2.0 License](https://github.com/moby/moby/blob/master/LICENSE).
 
 ## Related Projects
