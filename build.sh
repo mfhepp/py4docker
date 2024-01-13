@@ -75,6 +75,7 @@ else
   ENVIRONMENT_FILE="$1.yaml"
   # user:test_app:env-dev
   # user:test_app:env
+  # user:notebook:env
   DIGEST="$1${DIGEST:+-$DIGEST}"
   echo "INFO: Environment file = $ENVIRONMENT_FILE"
 fi
@@ -91,3 +92,15 @@ docker build $PARAMETERS \
  --build-arg="ENVIRONMENT_FILE=$ENVIRONMENT_FILE" \
 $BUILD_NOTEBOOK \
  --progress=plain --tag $IMAGE_NAME .
+echo INFO: Writing lock file of installed packages for $ENVIRONMENT_FILE
+docker run \
+    --security-opt seccomp=seccomp-default.json \
+    --security-opt=no-new-privileges \
+    --read-only --tmpfs /tmp \
+    --cap-drop all \
+    --rm \
+    $IMAGE_NAME \
+    micromamba env export -n base > $ENVIRONMENT_FILE.lock
+echo INFO: Build completed.
+
+   

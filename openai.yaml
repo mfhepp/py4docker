@@ -19,7 +19,8 @@ dependencies:
   - numpy
   - openpyxl
   - tabulate
-  - beautifulsoup4
+  - openai
+  # - jupyter_ai
 # PyPi modules
 #  - pip:
 #    - black[jupyter]

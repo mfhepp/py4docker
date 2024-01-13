@@ -19,6 +19,7 @@ Based on [`micromamba-docker`](https://github.com/mamba-org/micromamba-docker) a
     - Removed [Linux Kernel capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html)
     - Adding new kernel capabilities is blocked
 - **Development mode,** in which the local version of the Python code can be run inside the container 
+- **Jupyter Notebook / JupyterLab**: You can also run Jupyter Notebook and JupyterLab inside the isolated container.
 
 ## Installation
 
@@ -305,11 +306,95 @@ It is **strongly recommended to use an absolute path in the alias** (otherwise, 
 
 **Warning:** An alias will allow you to run the script from any folder on your system, and that folder will be available for read-access to the script as `/usr/app/data`.
 
+## Jupyter Notebook and JupyterLab
+
+You can build isolated containers with Juypter Notebook and JupyterLab.
+
+### Building a Notebook Image
+
+#### Using the default environment file `notebook.yaml`
+
+```bash
+# This will build <username>/notebook:latest
+./build.sh -n
+```
+
+#### Using one of the pre-defined environment files
+
+```bash
+# This will build <username>/notebook:dataviz from dataviz.yaml
+./build.sh -n dataviz
+# This will build <username>/notebook:openai from openai.yaml
+./build.sh -n openai
+```
+
+#### Using your own environment file
+
+1. Copy `notebook.yaml` to a new YAML file (e.g. `foo.yaml`) and add modules as needed.
+2. Build the image with
+```bash
+# This will build <username>/notebook:foo from foo.yaml
+./build.sh -n foo
+```
+
+### Creating an Alias `nbh` (for 'notebook here')
+
+Add the following lines to your `.bash_profile` file, like so:
+
+```bash
+# ~/foo/bar/py4docker/ is the absolute path to the project in this example
+alias nbh="bash ~/foo/bar/py4docker/run_notebook.sh"
+```
+**Warning:** 
+1. An alias will allow you to run the notebook container from any folder on your system, and that folder will be available for read- and write-access to all code and libraries inside the container.
+2. Symbolic links may allow access to resources outside the current working directory!
+
+#### Starting a Notebook Container
+
+The notebook containers need write-access and a network connection and are hence not as well isolated as in the Python script modus.
+
+The current working directory will be mapped to `/usr/app/src` inside the container.
+
+For a list of available notebook images (=environments), you can use the alias `nbh`
+
+```bash
+nbh --list
+```
+
+or
+
+```bash
+./run_notebook.sh --list
+```
+
+#### Using the default environment `notebook.yaml`
+
+```bash
+# This will start <username>/notebook:latest 
+nbh
+```
+
+#### Using one of the pre-defined environments
+
+```bash
+# This will start <username>/notebook:dataviz
+nbh dataviz
+# This will start <username>/notebook:openai
+nbh openai
+```
+
+#### Using your own environment
+
+```bash
+# This will start <username>/notebook:foo built from foo.yaml
+nbh foo
+```
+
 ## Advanced Topics
 
 ### Access to the Local File System
 
-The current working directory will be available as `/usr/app/data` from within the container. By default, it is read-only. If you want to make this writeable, change the line
+The current working directory will be available as `/usr/app/data` from within the container. By default, it is read-only (except in the Jupyter Notebook mode). If you want to make this writeable, change the line
 
 `--mount type=bind,source=$REAL_PWD,target=/usr/app/data,readonly \`
 
@@ -322,7 +407,6 @@ You can also mount additional local paths using the same syntax.
 ### Write-Access to the Source Code in Development Mode
 
 If you want to grant your code **write-access** to the `src` folder in **development mode** permanently, you can use the option `-D`, like so:
-
 
 ```bash
 ./run_script.sh -D
@@ -379,10 +463,30 @@ from `run_script.sh`.
 
 More advanced settings are possible, e.g. adding a proxy or firewall inside the container that permits access only to a known set of IP addresses or domains and / or logs the outbound traffic.
 
+## Updating
+
+For updating the Python packages, you should re-built the respective image with `-f` (for 'force'):
+
+```bash
+# Script
+./build.sh -f
+# Script development image
+./build.sh -f -d
+# Default notebook image
+./build.sh -fn
+# Notebook image from dataviz.yaml
+./build.sh -fn dataviz
+# Notebook image from openai.yaml
+./build.sh -fn openai
+```
+
 ## Limitations and Ideas for Improvement
 
 - The code is currently maintained for Docker Desktop on Apple Silicon only. It may work on other platforms, but I have no time for testing at the moment. It seems to work on Debian.
-- Expand support for blocking and logging Internet access e.g. by domain or IP ranges is a priority at my side, but non-trivial.
+- Better support for blocking and logging Internet access e.g. by domain or IP ranges is a priority at my side, but non-trivial.
+- The Jupyter Notebook mode has currently no support for bind mounts in Linux file-systems and will hence only work with Docker Desktop.
+- Jupyter Notebook requires a writeable OS.
+- The image size can likely be reduced further.
 
 ## LICENSE
 

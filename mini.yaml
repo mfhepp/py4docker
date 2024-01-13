@@ -7,19 +7,6 @@ channels:
 dependencies:
   - pip
   - python>=3.9
-  - typer
-  - requests
-  - httpx
-  - nest-asyncio
-  - black[jupyter]
-  - jupyter
-  - ipykernel
-  - jupytext
-  - pandas
-  - numpy
-  - openpyxl
-  - tabulate
-  - beautifulsoup4
 # PyPi modules
 #  - pip:
 #    - black[jupyter]
