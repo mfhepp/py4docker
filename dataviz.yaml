@@ -19,7 +19,12 @@ dependencies:
   - numpy
   - openpyxl
   - tabulate
+  - matplotlib
   - beautifulsoup4
+  - graphviz
+  - python-graphviz
+  - seaborn
+#  - jupyter_ai
 # PyPi modules
 #  - pip:
 #    - black[jupyter]

@@ -28,14 +28,13 @@ COPY --chown=$MAMBA_USER:$MAMBA_USER ${ENVIRONMENT_FILE} /tmp/env.yaml
 # This is due to the way micromamba-docker works
 RUN micromamba install -y -n base -f /tmp/env.yaml && \
     micromamba clean --all --yes
-# Install Kernels for Jupyter Notebook etc.
-# TODO: Add
-RUN echo Notebook mode is "$NOTEBOOK_MODE"
-RUN if [[ -n "$NOTEBOOK_MODE" ]] ; then echo DEBUG Notebook mode ; fi
 WORKDIR /usr/app/src
+# TODO: This is not needed for notebook images
 COPY --chown=$MAMBA_USER:$MAMBA_USER src/ ./
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
 ENTRYPOINT ["/usr/local/bin/_entrypoint.sh"]
+# Add the base environment as the default Jupyter Python kernel
+RUN if [[ -n "$NOTEBOOK_MODE" ]] ; then python -m ipykernel install --user ; fi
 # For debugging, use this one
 # ENTRYPOINT ["/usr/local/bin/_entrypoint.sh", "/bin/sh"]
 # In a final application, you may want to hard-wire the entrypoint to the script:
