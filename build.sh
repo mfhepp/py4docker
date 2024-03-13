@@ -101,6 +101,5 @@ docker run \
     --rm \
     $IMAGE_NAME \
     micromamba env export -n base > $ENVIRONMENT_FILE.lock
+# --explicit would give more details, but would be less portable
 echo INFO: Build completed.
-
-   
