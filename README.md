@@ -491,7 +491,7 @@ For updating the Python packages, you should re-built the respective image with 
 ## LICENSE
 
 - The project itself is available under the [MIT License](LICENSE). If need additional permissions, please contact me.
-- The [Docker default seccomp profile file](https://github.com/moby/moby/blob/master/profiles/seccomp/default.json) is being used under an [Apache 2.0 License](https://github.com/moby/moby/blob/master/LICENSE).
+- The included [Docker default seccomp profile file](https://github.com/moby/moby/blob/master/profiles/seccomp/default.json) is being used under an [Apache 2.0 License](https://github.com/moby/moby/blob/master/LICENSE).
 
 ## Related Projects
 
