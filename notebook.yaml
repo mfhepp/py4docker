@@ -20,6 +20,7 @@ dependencies:
   - openpyxl
   - tabulate
   - beautifulsoup4
+  - rdflib
 # PyPi modules
 #  - pip:
 #    - black[jupyter]
