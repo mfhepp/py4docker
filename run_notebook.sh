@@ -64,8 +64,6 @@ echo ""
 [ "$reply" != "Y" ] && [ "$reply" != "y" ] && echo "Aborting." && exit 1
 
 # Open browser
-echo DEBUG: $TOKEN
-echo URL: http://localhost:8888/?token=$TOKEN
 open http://localhost:8888/?token=$TOKEN
 docker run -it -p 8888:8888 \
     $NOTEBOOK_DIR_MOUNT \
