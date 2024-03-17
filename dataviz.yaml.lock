@@ -28,7 +28,7 @@ dependencies:
 - charset-normalizer=3.3.2=pyhd8ed1ab_0
 - click=8.1.7=unix_pyh707e725_0
 - colorama=0.4.6=pyhd8ed1ab_0
-- comm=0.2.1=pyhd8ed1ab_0
+- comm=0.2.2=pyhd8ed1ab_0
 - contourpy=1.2.0=py312h8f0b210_0
 - cycler=0.12.1=pyhd8ed1ab_0
 - debugpy=1.8.1=py312h2aa54b4_0
@@ -38,7 +38,7 @@ dependencies:
 - et_xmlfile=1.1.0=pyhd8ed1ab_0
 - exceptiongroup=1.2.0=pyhd8ed1ab_2
 - executing=2.0.1=pyhd8ed1ab_0
-- expat=2.6.1=h2f0025b_0
+- expat=2.6.2=h2f0025b_0
 - font-ttf-dejavu-sans-mono=2.37=hab24e00_0
 - font-ttf-inconsolata=3.000=h77eed37_0
 - font-ttf-source-code-pro=2.038=h77eed37_0
@@ -68,14 +68,14 @@ dependencies:
 - idna=3.6=pyhd8ed1ab_0
 - importlib-metadata=7.0.2=pyha770c72_0
 - importlib_metadata=7.0.2=hd8ed1ab_0
-- importlib_resources=6.1.3=pyhd8ed1ab_0
+- importlib_resources=6.3.0=pyhd8ed1ab_0
 - ipykernel=6.29.3=pyhd33586a_0
 - ipython=8.22.2=pyh707e725_0
 - ipywidgets=8.1.2=pyhd8ed1ab_0
 - isoduration=20.11.0=pyhd8ed1ab_0
 - jedi=0.19.1=pyhd8ed1ab_0
 - jinja2=3.1.3=pyhd8ed1ab_0
-- json5=0.9.22=pyhd8ed1ab_0
+- json5=0.9.24=pyhd8ed1ab_0
 - jsonpointer=2.4=py312h996f985_3
 - jsonschema=4.21.1=pyhd8ed1ab_0
 - jsonschema-specifications=2023.12.1=pyhd8ed1ab_0
@@ -88,7 +88,7 @@ dependencies:
 - jupyter_events=0.9.1=pyhd8ed1ab_0
 - jupyter_server=2.13.0=pyhd8ed1ab_0
 - jupyter_server_terminals=0.5.3=pyhd8ed1ab_0
-- jupyterlab=4.1.4=pyhd8ed1ab_0
+- jupyterlab=4.1.5=pyhd8ed1ab_0
 - jupyterlab_pygments=0.3.0=pyhd8ed1ab_1
 - jupyterlab_server=2.25.4=pyhd8ed1ab_0
 - jupyterlab_widgets=3.0.10=pyhd8ed1ab_0
@@ -103,7 +103,7 @@ dependencies:
 - libbrotlienc=1.1.0=h31becfc_1
 - libcblas=3.9.0=21_linuxaarch64_openblas
 - libdeflate=1.19=h31becfc_0
-- libexpat=2.6.1=h2f0025b_0
+- libexpat=2.6.2=h2f0025b_0
 - libffi=3.4.2=h3557bc0_5
 - libgcc-ng=13.2.0=hf8544c7_5
 - libgd=2.3.3=hcd22fd5_9
@@ -143,10 +143,10 @@ dependencies:
 - nbconvert=7.16.2=pyhd8ed1ab_0
 - nbconvert-core=7.16.2=pyhd8ed1ab_0
 - nbconvert-pandoc=7.16.2=pyhd8ed1ab_0
-- nbformat=5.10.2=pyhd8ed1ab_0
+- nbformat=5.10.3=pyhd8ed1ab_0
 - ncurses=6.4=h0425590_2
 - nest-asyncio=1.6.0=pyhd8ed1ab_0
-- notebook=7.1.1=pyhd8ed1ab_0
+- notebook=7.1.2=pyhd8ed1ab_0
 - notebook-shim=0.2.4=pyhd8ed1ab_0
 - numpy=1.26.4=py312h470d778_0
 - openjpeg=2.5.2=h0d9d63b_0
@@ -203,7 +203,7 @@ dependencies:
 - seaborn=0.13.2=hd8ed1ab_0
 - seaborn-base=0.13.2=pyhd8ed1ab_0
 - send2trash=1.8.2=pyh41d4057_0
-- setuptools=69.1.1=pyhd8ed1ab_0
+- setuptools=69.2.0=pyhd8ed1ab_0
 - shellingham=1.5.4=pyhd8ed1ab_0
 - six=1.16.0=pyh6c4a22f_0
 - sniffio=1.3.1=pyhd8ed1ab_0
@@ -219,7 +219,7 @@ dependencies:
 - tornado=6.4=py312h9ef2f89_0
 - traitlets=5.14.2=pyhd8ed1ab_0
 - typer=0.9.0=pyhd8ed1ab_0
-- types-python-dateutil=2.8.19.20240311=pyhd8ed1ab_0
+- types-python-dateutil=2.9.0.20240316=pyhd8ed1ab_0
 - typing-extensions=4.10.0=hd8ed1ab_0
 - typing_extensions=4.10.0=pyha770c72_0
 - typing_utils=0.1.0=pyhd8ed1ab_0

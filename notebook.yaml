@@ -13,6 +13,7 @@ dependencies:
   - nest-asyncio
   - black[jupyter]
   - jupyter
+  - notebook
   - ipykernel
   - jupytext
   - pandas
@@ -20,7 +21,11 @@ dependencies:
   - openpyxl
   - tabulate
   - beautifulsoup4
-  - rdflib
-# PyPi modules
-#  - pip:
-#    - black[jupyter]
+  - rdflib>=7.0.0
+  - pyshacl
+  - lxml
+ # PyPi modules
+ # - pip:
+ #   - black[jupyter]
+ 
+
