@@ -1,6 +1,10 @@
 # Using an environment name other than "base" is not recommended!
 # Read https://github.com/mamba-org/micromamba-docker#multiple-environments
 # if you must use a different environment name.
+# Note: This environment cannot be use for notebooks, as it lacks the respective modules
+# - jupyter
+# - notebook
+# - ipykernel
 name: base
 channels:
   - conda-forge
