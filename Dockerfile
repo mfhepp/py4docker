@@ -36,6 +36,6 @@ ENTRYPOINT ["/usr/local/bin/_entrypoint.sh"]
 # Add the base environment as the default Jupyter Python kernel
 RUN if [[ -n "$NOTEBOOK_MODE" ]] ; then python -m ipykernel install --user ; fi
 # For debugging, use this one
-# ENTRYPOINT ["/usr/local/bin/_entrypoint.sh", "/bin/sh"]
+# ENTRYPOINT ["/usr/local/bin/_entrypoint.sh", "/bin/bash"]
 # In a final application, you may want to hard-wire the entrypoint to the script:
 # ENTRYPOINT ["/usr/local/bin/_entrypoint.sh", "python", "./main.py"]
