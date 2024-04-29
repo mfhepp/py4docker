@@ -82,7 +82,7 @@ while getopts ":dDin" opt; do
     i)
       echo "INFO: Interactive mode enabled, keeping terminal open (use 'exit' to quit)"
       PARAMETERS="-it"
-      COMMAND="/bin/sh"
+      COMMAND="/bin/bash"
       ;;
     n)
       echo "INFO: Outbound network ENABLED (Warning: The script can access the entire host network)"

@@ -42,7 +42,7 @@ while getopts ":i" opt; do
     i)
       echo "Interactive mode enabled, starting shell and keeping terminal open (use 'exit' to quit)"
       echo Use e.g. $COMMAND
-      COMMAND="/bin/sh"
+      COMMAND="/bin/bash"
       ;;   
   esac
 done
