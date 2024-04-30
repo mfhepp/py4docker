@@ -160,6 +160,9 @@ mkdir -p output
 # old 
 #  --mount type=bind,source=$REAL_PWD,target=/usr/app/data,readonly \
 # --mount type=bind,source=$REAL_PWD/output,target=/usr/app/data/output$MOUNT_SUFFIX \
+# MOUNT_SUFFIX=",userns=host"
+# -v "${REAL_PWD}/output:/usr/app/output${MOUNT_SUFFIX}" \
+
 echo  "-v ${REAL_PWD}/output:/usr/app/output${MOUNT_SUFFIX}" 
 
 docker run \
@@ -167,7 +170,7 @@ $PARAMETERS \
 $USER_MAPPING \
 $MOUNT_BEFORE_PWD \
  -v "${REAL_PWD}:/usr/app/data:ro" \
- -v \""${REAL_PWD}/output:/usr/app/output"\"${MOUNT_SUFFIX} \
+ -v "${REAL_PWD}/output:/usr/app/output",userns=host \
 $MOUNT_AFTER_PWD \
 $FIX_OVERLAP_MOUNT \
 $NETWORK \
