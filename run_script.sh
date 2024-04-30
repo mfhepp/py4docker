@@ -156,13 +156,15 @@ mkdir -p output
 
 # what works is
 #  docker run --rm -it -v "$(pwd):/tmp",userns=host --user $(id -u):$(id -g) mambaorg/micromamba:1.5.8 /bin/bash
+# old 
+#  --mount type=bind,source=$REAL_PWD,target=/usr/app/data,readonly \
+# --mount type=bind,source=$REAL_PWD/output,target=/usr/app/data/output$MOUNT_SUFFIX \
+
 docker run \
 $PARAMETERS \
 $USER_MAPPING \
 $MOUNT_BEFORE_PWD \
-#  --mount type=bind,source=$REAL_PWD,target=/usr/app/data,readonly \
  -v "$REAL_PWD":/usr/app/data:ro \
-# --mount type=bind,source=$REAL_PWD/output,target=/usr/app/data/output$MOUNT_SUFFIX \
  -v "$REAL_PWD"/output:/usr/app/data/output$MOUNT_SUFFIX \
 $MOUNT_AFTER_PWD \
 $FIX_OVERLAP_MOUNT \
