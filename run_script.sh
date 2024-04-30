@@ -165,7 +165,7 @@ $PARAMETERS \
 $USER_MAPPING \
 $MOUNT_BEFORE_PWD \
  -v "$REAL_PWD":/usr/app/data:ro \
- -v "$REAL_PWD"/output:/usr/app/output"$MOUNT_SUFFIX \
+ -v "$REAL_PWD/output:/usr/app/output"$MOUNT_SUFFIX \
 $MOUNT_AFTER_PWD \
 $FIX_OVERLAP_MOUNT \
 $NETWORK \
