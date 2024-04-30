@@ -46,8 +46,11 @@ if [[ $UID_HOST -lt 1000 ]]; then
     echo "INFO: The User ID is < 1000, not passed to container user"
     echo "Most likely, you are running Docker Desktop on OSX."
     USER_MAPPING=""
+    MOUNT_SUFFIX=""
 else
     USER_MAPPING="--user $UID_HOST:$GID_HOST"
+    # Disable
+    MOUNT_SUFFIX=",userns=host"
 fi
 while getopts ":dDin" opt; do
   case ${opt} in
@@ -75,7 +78,7 @@ while getopts ":dDin" opt; do
       [ "$reply" != "Y" ] && [ "$reply" != "y" ] && echo "Aborting." && exit 1
       DIGEST_SUFFIX="dev"
       # echo "Using image ${IMAGE_NAME}_dev"
-      SOURCE_MOUNT="--mount type=bind,source=$SCRIPT_DIR/src,target=/usr/app/src"
+      SOURCE_MOUNT="--mount type=bind,source=$SCRIPT_DIR/src,target=/usr/app/src$MOUNT_SUFFIX"
       # IMAGE_NAME="${IMAGE_NAME}_dev"
       fi
       ;;      
@@ -155,7 +158,7 @@ $PARAMETERS \
 $USER_MAPPING \
 $MOUNT_BEFORE_PWD \
  --mount type=bind,source=$REAL_PWD,target=/usr/app/data,readonly \
- --mount type=bind,source=$REAL_PWD/output,target=/usr/app/data/output \
+ --mount type=bind,source=$REAL_PWD/output,target=/usr/app/data/output$MOUNT_SUFFIX \
 $MOUNT_AFTER_PWD \
 $FIX_OVERLAP_MOUNT \
 $NETWORK \
