@@ -78,7 +78,8 @@ while getopts ":dDin" opt; do
       [ "$reply" != "Y" ] && [ "$reply" != "y" ] && echo "Aborting." && exit 1
       DIGEST_SUFFIX="dev"
       # echo "Using image ${IMAGE_NAME}_dev"
-      SOURCE_MOUNT="--mount type=bind,source=$SCRIPT_DIR/src,target=/usr/app/src$MOUNT_SUFFIX"
+      # SOURCE_MOUNT="--mount type=bind,source=$SCRIPT_DIR/src,target=/usr/app/src$MOUNT_SUFFIX"
+      SOURCE_MOUNT="-v $SCRIPT_DIR/src:/usr/app/src$MOUNT_SUFFIX" \
       # IMAGE_NAME="${IMAGE_NAME}_dev"
       fi
       ;;      
@@ -153,12 +154,16 @@ echo INFO: Docker image is = $IMAGE_NAME
 # Create output directory if not exists
 mkdir -p output
 
+# what works is
+#  docker run --rm -it -v "$(pwd):/tmp",userns=host --user $(id -u):$(id -g) mambaorg/micromamba:1.5.8 /bin/bash
 docker run \
 $PARAMETERS \
 $USER_MAPPING \
 $MOUNT_BEFORE_PWD \
- --mount type=bind,source=$REAL_PWD,target=/usr/app/data,readonly \
- --mount type=bind,source=$REAL_PWD/output,target=/usr/app/data/output$MOUNT_SUFFIX \
+#  --mount type=bind,source=$REAL_PWD,target=/usr/app/data,readonly \
+ -v "$REAL_PWD":/usr/app/data:ro \
+# --mount type=bind,source=$REAL_PWD/output,target=/usr/app/data/output$MOUNT_SUFFIX \
+ -v "$REAL_PWD"/output:/usr/app/data/output$MOUNT_SUFFIX \
 $MOUNT_AFTER_PWD \
 $FIX_OVERLAP_MOUNT \
 $NETWORK \
