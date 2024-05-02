@@ -13,7 +13,10 @@ SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 NOTEBOOK_DIR_MOUNT="--mount type=bind,source=$REAL_PWD,target=/usr/app/src"
 # Create Jupyter security token so that we have it for opening the browser
 TOKEN=$(uuidgen | tr '[:upper:]' '[:lower:]')"-"$(uuidgen | tr '[:upper:]' '[:lower:]')
-COMMAND="jupyter notebook --port 8888 --ip=0.0.0.0 --no-browser --notebook-dir=/usr/app/src --IdentityProvider.token=$TOKEN --KernelSpecManager.ensure_native_kernel=False"
+# COMMAND="jupyter notebook --port 8888 --ip=0.0.0.0 --no-browser --notebook-dir=/usr/app/src --IdentityProvider.token=$TOKEN --KernelSpecManager.ensure_native_kernel=False"
+# new in 4.1
+export JUPYTER_TOKEN=$TOKEN
+COMMAND="jupyter notebook --port 8888 --ip=0.0.0.0 --no-browser --NotebookApp.token=$JUPYTER_TOKEN --notebook-dir=/usr/app/src --KernelSpecManager.ensure_native_kernel=False"
 
 usage ()
 {
@@ -51,6 +54,7 @@ shift $((OPTIND-1))
 DIGEST=$1
 IMAGE_NAME="${USER}/${NOTEBOOK_ID}${DIGEST:+:$DIGEST}"
 echo INFO: Docker image = $IMAGE_NAME
+echo INFO: TOKEN = $TOKEN
 # Internal Jupyter paths:
 #      config -> /opt/conda/etc/jupyter
 #      data -> /opt/conda/share/jupyter
