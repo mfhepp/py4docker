@@ -155,7 +155,10 @@ echo INFO: Docker image is = $IMAGE_NAME
 mkdir -p output
 
 # what works is
-#  docker run --rm -it -v "$(pwd):/tmp",userns=host --user $(id -u):$(id -g) mambaorg/micromamba:1.5.8 /bin/bash
+# no, it does not
+# docker run --rm -it -v "$(pwd):/tmp",userns=host --user $(id -u):$(id -g) mambaorg/micromamba:1.5.8 /bin/bash
+docker run --userns=host --rm -it -v "$(pwd):/tmp" --user $(id -u):$(id -g) mambaorg/micromamba:1.5.8 /bin/bash
+
 # -v /home/py4docker/py4docker/output:/usr/app/output,userns=host
 # old 
 #  --mount type=bind,source=$REAL_PWD,target=/usr/app/data,readonly \
@@ -170,7 +173,7 @@ $PARAMETERS \
 $USER_MAPPING \
 $MOUNT_BEFORE_PWD \
  -v "${REAL_PWD}:/usr/app/data:ro" \
- -v "${REAL_PWD}/output:/usr/app/output":userns=host \
+ -v "${REAL_PWD}/output:/usr/app/output" ,userns=host \
 $MOUNT_AFTER_PWD \
 $FIX_OVERLAP_MOUNT \
 $NETWORK \
