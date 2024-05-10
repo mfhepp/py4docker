@@ -1,5 +1,6 @@
 .git
 .github
+.secrets
 docs
 test
 LICENSE

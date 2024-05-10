@@ -310,6 +310,9 @@ It is **strongly recommended to use an absolute path in the alias** (otherwise, 
 
 You can build isolated containers with Juypter Notebook and JupyterLab.
 
+**Note:** This functionality is likely to become a separate project, see [Issue 15](https://github.com/mfhepp/py4docker/issues/15)
+
+
 ### Building a Notebook Image
 
 #### Using the default environment file `notebook.yaml`
@@ -389,6 +392,45 @@ nbh openai
 # This will start <username>/notebook:foo built from foo.yaml
 nbh foo
 ```
+
+#### Mapping a secondary data directory to `/mnt/data`
+
+You can map any other directory from your system as read-only bind volume to `/mnt/data` inside the Docker container like so:
+
+```bash
+# /home/foo/bar will be accessible as /mnt/data inside the container:
+./run_notebook.sh --data-dir /home/foo/bar
+```
+
+#### Mapping API tokens and other secrets from local files to `/mnt/secrets/`
+
+You can map one or more local files containing access tokens as a read-only bind mounts to `/mnt/secrets/` inside the Docker container like so:
+
+```bash
+./run_notebook.sh --add-secret ~/Documents/.access_tokens/TESTTOKEN1 FOO \
+                  --add-secret ~/Documents/.access_tokens/TESTTOKEN2 BAR
+```
+You will then be able to access them inside the notebook like so:
+
+```bash
+# Inside a notebook cell, run Bash commands with a ! directive;
+!cat /mnt/secrets/FOO
+!cat /mnt/secrets/BAR
+# Contents of the two files TESTTOKEN1 and TESTTOKEN2
+SUPERSECRET_TOKEN1
+API_TOKEN_FOR_ACME
+```
+
+A Python example is in [examples/secrets_test.ipynb](examples/secrets_test.ipynb).
+
+**Warnings:** 
+
+1. This is a ***simplistic*** substitute for Docker's mechanisms for managing secrets, but IMO more secure than using environment variables that may be leaked in logfiles etc. **Keep in mind that in the current version, ALL files inside that directory will be available from inside the container!**
+2. Make sure **that you DO NOT LEAK YOUR SECRETS TO YOUR Git repository**.
+3. Make sure **THAT YOUR SECRETS folder is NOT below your current working directory.** Otherwise, it will be accessible for read- and write-access from within  `/usr/app/data` (e.g. as  `/usr/app/data/.access_tokens/`)!!!
+4. On OSX, do not use `~/.access_tokens`, but rather `~/Documents/.access_tokens`, `~/Documents/.access_tokens`, or any place in the predefined subfolders below the user directory, because
+    1. OSX grants ANY user on your machine read-access to any user's home folder.
+    2. The OSX permissions model for applications will ask you only if an application tries to access one of the specific folders ***below the user directory***. I.e., any application COULD READ from `/Users/yourusername/.access_tokens`!!!
 
 ## Advanced Topics
 
