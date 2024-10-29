@@ -524,7 +524,7 @@ For updating the Python packages, you should re-built the respective image with 
 ./build.sh -fn openai
 ```
 
-### Updating `micromamba``
+### Updating `micromamba`
 
 1. Get the latest available version tag from <https://github.com/mamba-org/micromamba-docker/tags> without the `v`, like `2.0.2`.
 2. Create a new feature branch: `git checkout -b update_micromamba_x.y.z`
