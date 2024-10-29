@@ -507,6 +507,8 @@ More advanced settings are possible, e.g. adding a proxy or firewall inside the 
 
 ## Updating
 
+### Updating Python Packages
+
 For updating the Python packages, you should re-built the respective image with `-f` (for 'force'):
 
 ```bash
@@ -521,6 +523,29 @@ For updating the Python packages, you should re-built the respective image with 
 # Notebook image from openai.yaml
 ./build.sh -fn openai
 ```
+
+### Updating `micromamba`
+
+1. Get the latest available version tag from <https://github.com/mamba-org/micromamba-docker/tags> without the `v`, like `2.0.2`.
+2. Create a new feature branch: `git checkout -b update_micromamba_x.y.z`
+3. Update the version string in the [Dockerfile](Dockerfile):
+    - `ARG MICROMAMBA_VERSION="2.0.2"`
+4. Build the development image with `./build.sh -fd` and test it with `./run_script.sh -d`. (@TODO: Better integration test).
+5. Commit this first step, as it will also document changes to the lock file.
+6. Build, test, and commit the default `notebook` environment:
+    - `./build.sh -fn`
+    - `./run_notebook.sh`
+    - **Warning:** This will also overwrite your local image for this notebook environment. (@TODO: Add more robust approach)
+    - Commit changes in order to track the modifications in `notebook.yaml.lock`
+7. Build, test, and commit each environment:
+    - `./build.sh -fn {mini | dataviz | openai}`
+    - `./run_notebook.sh {mini | dataviz | openai}`
+    - **Warning:** This will also overwrite your local image for this notebook environment. (@TODO: Add more robust approach)
+    - Commit changes in order to track the modifications in `{mini | dataviz | openai}.yaml.lock`
+8. Run more tests.
+9. Update README.md.
+10. Commit, create pull-request, accept/merge, and add new release tag.
+11. Update local Docker image with  `./build.sh -f`.
 
 ## Limitations and Ideas for Improvement
 
