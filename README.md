@@ -530,22 +530,23 @@ For updating the Python packages, you should re-built the respective image with 
 2. Create a new feature branch: `git checkout -b update_micromamba_x.y.z`
 3. Update the version string in the [Dockerfile](Dockerfile):
     - `ARG MICROMAMBA_VERSION="2.0.2"`
-4. Build the development image with `./build.sh -fd` and test it with `./run_script.sh -d`. (@TODO: Better integration test).
-5. Commit this first step, as it will also document changes to the lock file.
-6. Build, test, and commit the default `notebook` environment:
+4. Update `seccomp-default.json` from <https://raw.githubusercontent.com/moby/moby/refs/heads/master/profiles/seccomp/default.json>.
+5. Build the development image with `./build.sh -fd` and test it with `./run_script.sh -d`. (@TODO: Better integration test).
+6. Commit this first step, as it will also document changes to the lock file.
+7. Build, test, and commit the default `notebook` environment:
     - `./build.sh -fn`
     - `./run_notebook.sh`
     - **Warning:** This will also overwrite your local image for this notebook environment. (@TODO: Add more robust approach)
     - Commit changes in order to track the modifications in `notebook.yaml.lock`
-7. Build, test, and commit each environment:
+8. Build, test, and commit each environment:
     - `./build.sh -fn {mini | dataviz | openai}`
     - `./run_notebook.sh {mini | dataviz | openai}`
     - **Warning:** This will also overwrite your local image for this notebook environment. (@TODO: Add more robust approach)
     - Commit changes in order to track the modifications in `{mini | dataviz | openai}.yaml.lock`
-8. Run more tests.
-9. Update README.md.
-10. Commit, create pull-request, accept/merge, and add new release tag.
-11. Update local Docker image with  `./build.sh -f`.
+9. Run more tests.
+10. Update README.md.
+11. Commit, create pull-request, accept/merge, and add new release tag.
+12. Update local Docker image with  `./build.sh -f`.
 
 ## Limitations and Ideas for Improvement
 
