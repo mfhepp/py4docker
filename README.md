@@ -20,6 +20,7 @@ Based on [`micromamba-docker`](https://github.com/mamba-org/micromamba-docker) a
     - Adding new kernel capabilities is blocked
 - **Development mode,** in which the local version of the Python code can be run inside the container 
 - **Jupyter Notebook / JupyterLab**: You can also run Jupyter Notebook and JupyterLab inside the isolated container.
+- **Reproducible:** `build.sh` writes a YAML specification including versions for all `conda` and `pip` components, which can be used to reproduce a Python environment.
 
 ## Installation
 
@@ -173,6 +174,15 @@ This can be done with the `-f` (for _force_) option:
 ```
 
 Note that this may change the installed versions of Python packages. There is currently no mechanism for pinning the installed versions.
+
+### Building from pinned versions
+
+You can build a Docker image from the `*.yaml.lock` files, which contain the pinned versions of all `conda` and `pip` dependencies with the option `-l`, like so
+
+```bash
+./build.sh -l
+./build.sh -nl dataviz
+```
 
 ## Running the Script with `run_script.sh`
 
