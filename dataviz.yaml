@@ -27,4 +27,5 @@ dependencies:
 #  - jupyter_ai
 # PyPi modules
 #  - pip:
+#     - pyserial
 #    - black[jupyter]
