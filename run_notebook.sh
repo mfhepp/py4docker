@@ -106,7 +106,16 @@ done
 # New in Jupyter 4.1
 # Not sure we actually have to export it(?)
 export JUPYTER_TOKEN=$TOKEN
-COMMAND="jupyter notebook --port 8888 --ip=0.0.0.0 --no-browser --NotebookApp.token=$JUPYTER_TOKEN --notebook-dir=/usr/app/src --KernelSpecManager.ensure_native_kernel=False"
+# Try new approach
+# Was: 
+# COMMAND="jupyter notebook --port 8888 --ip=0.0.0.0 --no-browser --NotebookApp.token=$JUPYTER_TOKEN --notebook-dir=/usr/app/src --KernelSpecManager.ensure_native_kernel=False"
+COMMAND="jupyter notebook \
+  --port=8888 \
+  --ip=0.0.0.0 \
+  --no-browser \
+  --IdentityProvider.token=$JUPYTER_TOKEN \
+  --notebook-dir=/usr/app/src \
+  --KernelSpecManager.ensure_native_kernel=False"
 # Take e.g. "foo" if given as the digest name for the image based on foo.yaml
 IMAGE_NAME="${USER}/${NOTEBOOK_ID}${DIGEST:+:$DIGEST}"
 echo INFO: Using Docker image $IMAGE_NAME
