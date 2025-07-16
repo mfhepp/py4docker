@@ -557,6 +557,10 @@ For updating the Python packages, you should re-built the respective image with 
 9. Run more tests.
 10. Update README.md.
 11. Commit, create pull-request, accept/merge, and add new release tag.
+    ```bash
+    git tag -a v2.3.0 -m "Release 2.3.0"
+    git push origin v2.3.0
+    ```
 12. Update local Docker image with  `./build.sh -f`.
 
 ## Limitations and Ideas for Improvement
