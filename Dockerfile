@@ -2,7 +2,7 @@ ARG MICROMAMBA_VERSION="2.4.0"
 ARG ENVIRONMENT_FILE="env.yaml"
 ARG NOTEBOOK_MODE
 # Stage 1
-FROM mambaorg/micromamba:${MICROMAMBA_VERSION} AS micromamba-patched
+FROM docker.io/mambaorg/micromamba:${MICROMAMBA_VERSION} AS micromamba-patched
 ARG MICROMAMBA_VERSION
 ARG ENVIRONMENT_FILE
 ARG NOTEBOOK_MODE
