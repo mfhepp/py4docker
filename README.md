@@ -551,14 +551,13 @@ For updating the Python packages, you should re-built the respective image with 
     - **Warning:** This will also overwrite your local image for this notebook environment. (@TODO: Add more robust approach)
     - Commit changes in order to track the modifications in `notebook.yaml.lock`
 8. Build, test, and commit each environment:
-    a) All-in-one with `build_all_notebooks.sh`:
-        - `./build_all_notebooks.sh`
-    b) Manually
-        - `./build.sh -fn {mini | dataviz | openai}`
-        - `./run_notebook.sh {mini | dataviz | openai}`  
+    - **All-in-one**: `./build_all_notebooks.sh`
+    - **Manually**  
+`./build.sh -fn {mini | dataviz | openai}`  
+`./run_notebook.sh {mini | dataviz | openai}`    
     - **Warning:** This will also overwrite your local image for this notebook environment. (@TODO: Add more robust approach)
-    c) Review changes with `git diff`.  
-    d) Commit changes in order to track the modifications in `{mini | dataviz | openai}.yaml.lock`
+    - Review changes with `git diff`.  
+    - Commit changes in order to track the modifications in `{mini | dataviz | openai}.yaml.lock`
 9. Run more tests.
 10. Update README.md.
 11. Commit, create pull-request, accept/merge, and add new release tag.
