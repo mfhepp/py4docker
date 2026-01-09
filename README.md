@@ -540,9 +540,10 @@ For updating the Python packages, you should re-built the respective image with 
 2. Create a new feature branch: `git checkout -b update_micromamba_x.y.z`
 3. Update the version string in the [Dockerfile](Dockerfile):
     - `ARG MICROMAMBA_VERSION="2.0.2"`
-4. Update `seccomp-default.json` from <https://raw.githubusercontent.com/moby/moby/refs/heads/master/profiles/seccomp/default.json>.
-    - `curl -o seccomp-default.json https://raw.githubusercontent.com/moby/moby/refs/heads/master/profiles/seccomp/default.json`
+4. Update [`seccomp-default.json`](https://github.com/moby/profiles/blob/main/seccomp/default.json) from <https://raw.githubusercontent.com/moby/profiles/refs/heads/main/seccomp/default.json>.
+    - `curl -o seccomp-default.json https://raw.githubusercontent.com/moby/profiles/refs/heads/main/seccomp/default.json`    
 5. Build the development image with `./build.sh -fd` and test it with `./run_script.sh -d`. (@TODO: Better integration test).
+5. Check what has changed with `git diff`.
 6. Commit this first step, as it will also document changes to the lock file.
 7. Build, test, and commit the default `notebook` environment:
     - `./build.sh -fn`
