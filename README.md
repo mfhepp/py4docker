@@ -551,14 +551,19 @@ For updating the Python packages, you should re-built the respective image with 
     - **Warning:** This will also overwrite your local image for this notebook environment. (@TODO: Add more robust approach)
     - Commit changes in order to track the modifications in `notebook.yaml.lock`
 8. Build, test, and commit each environment:
+
     a) All-in-one with `build_all_notebooks.sh`:
-        - `./build_all_notebooks.sh`
+    - `./build_all_notebooks.sh`
+
     b) Manually
-        - `./build.sh -fn {mini | dataviz | openai}`
-        - `./run_notebook.sh {mini | dataviz | openai}`
+    - `./build.sh -fn {mini | dataviz | openai}`
+    - `./run_notebook.sh {mini | dataviz | openai}`  
+
     - **Warning:** This will also overwrite your local image for this notebook environment. (@TODO: Add more robust approach)
-    - Review changes with `git diff`.
-    - Commit changes in order to track the modifications in `{mini | dataviz | openai}.yaml.lock`
+
+    c) Review changes with `git diff`.
+    
+    d)  Commit changes in order to track the modifications in `{mini | dataviz | openai}.yaml.lock`
 9. Run more tests.
 10. Update README.md.
 11. Commit, create pull-request, accept/merge, and add new release tag.
@@ -579,7 +584,8 @@ For updating the Python packages, you should re-built the respective image with 
 ## LICENSE
 
 - The project itself is available under the [MIT License](LICENSE). If need additional permissions, please contact me.
-- The included [Docker default seccomp profile file](https://github.com/moby/moby/blob/master/profiles/seccomp/default.json) is being used under an [Apache 2.0 License](https://github.com/moby/moby/blob/master/LICENSE).
+- The included [Docker default seccomp profile file](https://github.com/moby/profiles/blob/main/seccomp/default.json) is being used under an [Apache 2.0 License](https://github.com/moby/profiles/blob/main/LICENSE).
+
 
 ## Related Projects
 
